@@ -21,6 +21,7 @@ class UdpSocket {
     void shutdown();
 
     //TODO! Does templates really bring anything? (stack allocation of headers...)
+    //How do we sync on frames in case of packet loss? 
     template<size_t NumPackets>
     int multirecv(void *dst){
         struct mmsghdr msgs[NumPackets];
@@ -30,12 +31,11 @@ class UdpSocket {
         timeout.tv_nsec = 0;
         memset(msgs, 0, sizeof(msgs));
         for (int i = 0; i < NumPackets; i++) {
-            iovecs[i].iov_base         = dst+i*packet_size_;
+            iovecs[i].iov_base         = static_cast<char*>(dst)+i*packet_size_;
             iovecs[i].iov_len          = NumPackets;
             msgs[i].msg_hdr.msg_iov    = &iovecs[i];
             msgs[i].msg_hdr.msg_iovlen = 1;
         }
-
         int rc = recvmmsg(sockfd_, msgs, NumPackets, 0, &timeout);
         return rc;
     }

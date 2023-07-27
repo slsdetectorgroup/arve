@@ -53,6 +53,7 @@ set(PublicHeaders
 )
 
 set(SourceFiles
+  src/FrameGrabber.cpp
   src/UdpSocket.cpp
 )
 
