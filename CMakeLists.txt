@@ -90,3 +90,6 @@ set_target_properties(recv_static PROPERTIES
 
 add_library(arve::static ALIAS recv_static)
 add_library(arve::shared ALIAS recv_shared)
+
+
+add_subdirectory(apps)

@@ -1,7 +1,8 @@
 #pragma once
 #include <atomic>
 
-namespace recv{
+// more or less: https://github.com/facebook/folly/blob/main/folly/ProducerConsumerQueue.h
+namespace arve{
 
 constexpr std::size_t hardware_destructive_interference_size = 128;
 

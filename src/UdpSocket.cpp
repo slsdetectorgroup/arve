@@ -4,7 +4,7 @@
 
 #include <netdb.h>
 #include <netinet/in.h>
-#include <sys/socket.h>
+// #include <sys/socket.h>
 #include <unistd.h>
 
 namespace arve {
@@ -31,8 +31,8 @@ UdpSocket::UdpSocket(const std::string &node, const std::string &port,
 
     //TODO! should we make this configurable, or do we actually don't need it?
     struct timeval timeout;      
-    timeout.tv_sec = 0;
-    timeout.tv_usec = 10000;
+    timeout.tv_sec = 1;
+    timeout.tv_usec = 0;
     if (setsockopt(sockfd_, SOL_SOCKET, SO_RCVTIMEO, &timeout,
                 sizeof timeout) < 0)
         throw std::runtime_error(
@@ -41,10 +41,6 @@ UdpSocket::UdpSocket(const std::string &node, const std::string &port,
 
     freeaddrinfo(res);
     fmt::print("UDP connected to: {}:{}\n", node, port);
-
-
-
-    //Setup bu
 }
 
 UdpSocket::~UdpSocket() {
@@ -71,30 +67,6 @@ bool UdpSocket::receivePacket(void *dst) {
     }
     return false;
 }
-
-// int UdpSocket::multirecv(void *dst){
-//     struct mmsghdr msgs[G2_PACK];
-//     struct iovec iovecs[G2_PACK];
-//     struct timespec timeout;
-//     timeout.tv_sec = 1;
-//     timeout.tv_nsec = 0;
-
-
-//     memset(msgs, 0, sizeof(msgs));
-//     for (int i = 0; i < G2_PACK; i++) {
-//         // iovecs[i].iov_base         = bufs[i];
-//         iovecs[i].iov_base         = dst+i*G2_PACKET_SIZE;
-//         iovecs[i].iov_len          = G2_PACK;
-//         msgs[i].msg_hdr.msg_iov    = &iovecs[i];
-//         msgs[i].msg_hdr.msg_iovlen = 1;
-//     }
-
-//     int rc = recvmmsg(sockfd_, msgs, G2_PACK, 0, &timeout);
-//     return rc;
-//     // int recvmmsg(int sockfd, struct mmsghdr *msgvec, unsigned int vlen,
-//     //                     int flags, struct timespec *timeout);
-
-// }
 
 void UdpSocket::setBufferSize(size_t size) {
     socklen_t optlen = sizeof(size);
