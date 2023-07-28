@@ -19,10 +19,13 @@ struct PacketHeader {
     uint8_t version;
 };
 
-template<size_t DataSize>
+
+
+//TODO! how much care do we need to take with alignment?
+template<typename Header, size_t PayloadSize>
 struct PacketBuffer{
-        PacketHeader header;
-        char data[DataSize];
+        Header header;
+        char data[PayloadSize];
 };
 
 }

@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.17)
 project(arve)
-
+include(GNUInstallDirs)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_CXX_FLAGS_RELEASE "-O3 -DNDEBUG")
 
@@ -17,6 +17,7 @@ endif()
 
 option(ARVE_TUNE_LOCAL "Tune to the specific CPU" OFF)
 option(ARVE_USE_SANITIZER "Use address sanitized" OFF)
+option(ARVE_BUILD_TESTS "Build unit tests" OFF)
 
 add_library(project_settings INTERFACE)
 target_compile_features(project_settings INTERFACE cxx_std_17)
@@ -46,6 +47,11 @@ if(ARVE_USE_SANITIZER)
   set(CMAKE_BUILD_TYPE "Debug")
 endif(ARVE_USE_SANITIZER)
 
+if(ARVE_BUILD_TESTS)
+    enable_testing()
+    add_subdirectory(tests)
+endif()
+
 
 add_library(arve::settings ALIAS project_settings)
 
@@ -67,9 +73,15 @@ set(PublicHeaders
 )
 
 set(SourceFiles
-  src/FrameGrabber.cpp
+#   src/FrameGrabber.cpp
   src/UdpSocket.cpp
 )
+
+if(ARVE_BUILD_TESTS)
+    target_sources(tests PRIVATE 
+                    ${CMAKE_CURRENT_SOURCE_DIR}/src/UdpSocket.test.cpp
+    )
+endif()
 
 add_library(
     recv_object OBJECT ${SourceFiles} 
@@ -108,3 +120,5 @@ add_library(arve::shared ALIAS recv_shared)
 
 
 add_subdirectory(apps)
+
+

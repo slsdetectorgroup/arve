@@ -2,5 +2,6 @@
 //top level include for project
 #include "FrameGrabber.h"
 #include "Packets.h"
+#include "RawFrame.h"
 #include "UdpSocket.h"
 
