@@ -8,12 +8,13 @@
 // #include <unistd.h>
 namespace arve {
 class UdpSocket {
-    int sockfd_ = -1;
-    size_t packet_size_;
+    int sockfd_{-1};
+    size_t packet_size_{0};
 
   public:
     UdpSocket(const std::string &node, const std::string &port,
               size_t packet_size);
+    UdpSocket();
     ~UdpSocket();
     bool receivePacket(void *dst);
     void setBufferSize(size_t size);
@@ -43,6 +44,12 @@ class UdpSocket {
     // No copy since the class manage the underlying socket
     UdpSocket(const UdpSocket &) = delete;
     UdpSocket &operator=(UdpSocket const &) = delete;
+
+    //Move is fine though
+    UdpSocket(UdpSocket&& other);
+    UdpSocket &operator=(UdpSocket&& other);
+
+    void swap(UdpSocket& other);
 
 };
 } // namespace arve

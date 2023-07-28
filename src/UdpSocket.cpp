@@ -43,6 +43,24 @@ UdpSocket::UdpSocket(const std::string &node, const std::string &port,
     fmt::print("UDP connected to: {}:{}\n", node, port);
 }
 
+
+UdpSocket::UdpSocket(){
+}
+
+UdpSocket::UdpSocket(UdpSocket&& other){
+    other.swap(*this);
+}
+
+void UdpSocket::UdpSocket::swap(UdpSocket& other){
+    std::swap(sockfd_, other.sockfd_);
+    std::swap(packet_size_, other.packet_size_);
+}
+
+UdpSocket &UdpSocket::operator=(UdpSocket&& other){
+    other.swap(*this);
+    return *this;
+}
+
 UdpSocket::~UdpSocket() {
     shutdown();
     ::close(sockfd_);

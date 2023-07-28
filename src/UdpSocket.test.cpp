@@ -86,3 +86,8 @@ TEST_CASE("Set and read back buffer size"){
     REQUIRE(s.bufferSize() == bufs);
 
 }
+
+TEST_CASE("Move construct an UdpSocket"){
+    UdpSocket s("127.0.0.1", "50556", 1024);
+    UdpSocket s2(std::move(s));
+}

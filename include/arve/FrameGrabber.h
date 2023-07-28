@@ -12,7 +12,8 @@ namespace arve {
 template <typename PacketHeader, size_t PayloadSize, size_t NumPackets>
 class FrameGrabber {
     UdpSocket sock;
-    std::atomic<bool> stopped_{false};
+    // std::atomic<bool> stopped_{false};
+    bool stopped_{false};
     PacketBuffer<PacketHeader, PayloadSize> packet_buffer;
     bool first_packet_cached{false};
 
@@ -20,6 +21,26 @@ class FrameGrabber {
     FrameGrabber(const std::string &node, const std::string &port)
         : sock(node, port, sizeof(PacketHeader) + PayloadSize) {
         sock.setBufferSize(1024 * 1024 * 100);
+    }
+
+    void swap(FrameGrabber& other){
+      sock.swap(other.sock);
+      std::swap(stopped_, other.stopped_);
+      std::swap(packet_buffer, other.packet_buffer);
+      std::swap(first_packet_cached, other.first_packet_cached);
+    }
+
+    // No copy since the class manage the underlying socket
+    FrameGrabber(const FrameGrabber &) = delete;
+    FrameGrabber &operator=(FrameGrabber const &) = delete;
+
+    //Move is fine though
+    FrameGrabber(FrameGrabber&& other){
+      other.swap(*this);
+    }
+    FrameGrabber &operator=(FrameGrabber&& other){
+      other.swap(*this);
+      return *this;
     }
 
     int recv_into(RawFrame<PacketHeader, PayloadSize, NumPackets> &raw_frame) {
