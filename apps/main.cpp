@@ -12,12 +12,9 @@
 int main() {
     constexpr size_t num_packets = 128;
     constexpr size_t payload_size = 8192;
-    constexpr size_t packet_size = payload_size+sizeof(arve::PacketHeader);
-
-
 
     arve::RawFrame<arve::PacketHeader, payload_size, num_packets> data;
-    arve::FrameGrabber<arve::PacketHeader, payload_size, num_packets> fg("127.0.0.1", "50001", num_packets, packet_size);
+    arve::FrameGrabber<arve::PacketHeader, payload_size, num_packets> fg("127.0.0.1", "50001");
 
     for (int i = 0; i!=3; ++i){
         auto rc = fg.recv_into(data);

@@ -1,10 +1,10 @@
 
 
 
-add_executable(tester main.cpp)
-target_link_libraries(tester PRIVATE arve::static arve::settings)
+add_executable(play main.cpp)
+target_link_libraries(play PRIVATE arve::static arve::settings)
 
-set_target_properties(tester PROPERTIES
+set_target_properties(play PROPERTIES
         RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}
-        OUTPUT_NAME tester
+        OUTPUT_NAME play
 )

@@ -1,7 +1,8 @@
 #pragma once
-// copy of slsDetectorDefs::sls_detector_header; be careful with versions!
-
+#include <cstdint>
+#include <cstddef>
 namespace arve{
+// copy of slsDetectorDefs::sls_detector_header; be careful with versions!
 
 struct PacketHeader {
     uint64_t frameNumber;

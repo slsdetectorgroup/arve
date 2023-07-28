@@ -73,24 +73,27 @@ set(PublicHeaders
 )
 
 set(SourceFiles
-#   src/FrameGrabber.cpp
-  src/UdpSocket.cpp
+    src/PacketSource.cpp
+    src/UdpSocket.cpp
 )
 
 if(ARVE_BUILD_TESTS)
-    target_sources(tests PRIVATE 
-                    ${CMAKE_CURRENT_SOURCE_DIR}/src/UdpSocket.test.cpp
+    target_sources(
+        tests PRIVATE 
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/FrameGrabber.test.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/SimpleQueue.test.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/UdpSocket.test.cpp
     )
 endif()
 
 add_library(
-    recv_object OBJECT ${SourceFiles} 
+    arve_object OBJECT ${SourceFiles} 
 )
 
-target_link_libraries(recv_object PRIVATE arve::settings fmt::fmt Threads::Threads )
-target_include_directories(recv_object PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
-set_target_properties(recv_object PROPERTIES
-    LIBRARY_OUTPUT_NAME recv_object
+target_link_libraries(arve_object PRIVATE arve::settings fmt::fmt Threads::Threads )
+target_include_directories(arve_object PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
+set_target_properties(arve_object PROPERTIES
+    LIBRARY_OUTPUT_NAME arve_object
     LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}
     POSITION_INDEPENDENT_CODE ON
     PUBLIC_HEADER "${PublicHeaders}"
@@ -98,25 +101,25 @@ set_target_properties(recv_object PROPERTIES
 
 
 #Shared library
-add_library(recv_shared SHARED $<TARGET_OBJECTS:recv_object>)
-target_link_libraries(recv_shared PUBLIC recv_object)
-set_target_properties(recv_shared PROPERTIES
+add_library(arve_shared SHARED $<TARGET_OBJECTS:arve_object>)
+target_link_libraries(arve_shared PUBLIC arve_object)
+set_target_properties(arve_shared PROPERTIES
     LIBRARY_OUTPUT_NAME arve
     LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}
     # PUBLIC_HEADER "${PUBLICHEADERS}"
 )
 
 #Static library
-add_library(recv_static STATIC $<TARGET_OBJECTS:recv_object>)
-target_link_libraries(recv_static PUBLIC recv_object)
-set_target_properties(recv_static PROPERTIES
+add_library(arve_static STATIC $<TARGET_OBJECTS:arve_object>)
+target_link_libraries(arve_static PUBLIC arve_object)
+set_target_properties(arve_static PROPERTIES
     ARCHIVE_OUTPUT_NAME arve
     ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}
     # PUBLIC_HEADER "${PUBLICHEADERS}"
 )
 
-add_library(arve::static ALIAS recv_static)
-add_library(arve::shared ALIAS recv_shared)
+add_library(arve::static ALIAS arve_static)
+add_library(arve::shared ALIAS arve_shared)
 
 
 add_subdirectory(apps)
