@@ -8,8 +8,15 @@ set(CMAKE_INSTALL_RPATH $ORIGIN)
 set(CMAKE_SKIP_BUILD_RPATH FALSE)
 set(CMAKE_BUILD_WITH_INSTALL_RPATH FALSE)
 
+#Force Release if build is not specified
+if (NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
+  message(STATUS "No build type selected, default to Release")
+  set(CMAKE_BUILD_TYPE "Release" CACHE STRING "Build type (default Release)" FORCE)
+endif()
 
-option(RECV_TUNE_LOCAL "Tune to the specific CPU" OFF)
+
+option(ARVE_TUNE_LOCAL "Tune to the specific CPU" OFF)
+option(ARVE_USE_SANITIZER "Use address sanitized" OFF)
 
 add_library(project_settings INTERFACE)
 target_compile_features(project_settings INTERFACE cxx_std_17)
@@ -33,9 +40,16 @@ target_compile_options(project_settings INTERFACE
                             -Wpedantic
                             -Wcast-align
 )
+if(ARVE_USE_SANITIZER)
+  set (CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -fno-omit-frame-pointer -fsanitize=address,undefined")
+  set (CMAKE_LINKER_FLAGS_DEBUG "${CMAKE_LINKER_FLAGS_DEBUG} -fno-omit-frame-pointer -fsanitize=address,undefined")
+  set(CMAKE_BUILD_TYPE "Debug")
+endif(ARVE_USE_SANITIZER)
+
+
 add_library(arve::settings ALIAS project_settings)
 
-if(RECV_TUNE_LOCAL)
+if(ARVE_TUNE_LOCAL)
     target_compile_options(project_settings INTERFACE -mtune=native -march=native)
 endif()
 

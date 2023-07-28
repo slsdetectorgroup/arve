@@ -1,5 +1,8 @@
 #pragma once
 // copy of slsDetectorDefs::sls_detector_header; be careful with versions!
+
+namespace arve{
+
 struct PacketHeader {
     uint64_t frameNumber;
     uint32_t expLength; /* Eiger: numsubframes, exptime x 100ns others) */
@@ -21,3 +24,5 @@ struct PacketBuffer{
         PacketHeader header;
         char data[DataSize];
 };
+
+}
