@@ -43,6 +43,16 @@ class FrameGrabber {
       return *this;
     }
 
+    void request_stop(){
+        stopped_ = true;
+    }
+
+    RawFrame<PacketHeader, PayloadSize, NumPackets> recv(){
+        RawFrame<PacketHeader, PayloadSize, NumPackets> frame;
+        recv_into(frame);
+        return std::move(frame);
+    }
+
     int recv_into(RawFrame<PacketHeader, PayloadSize, NumPackets> &raw_frame) {
         stopped_ = false;
         auto dst = &raw_frame[0];

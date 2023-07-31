@@ -11,6 +11,7 @@ Exploring ways of receiving UDP data from hybrid pixel detectors
 - Driven from UDP side or assembly side?
 - How deep do we go with templates?
 - C++ 20/23?
+- Python bindings using cppyy or pybind11?
 
 
 ## Dependencies (at the moment)

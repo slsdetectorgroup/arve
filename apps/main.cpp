@@ -5,7 +5,7 @@
 
 #include <array>
 #include <cerrno>
-
+#include <chrono>
 
 
 
@@ -24,9 +24,18 @@ int main() {
     // for(int i = 0; i!=num_packets; ++i){
     //     fmt::print("{} - {}\n", data[i].header.frameNumber, data[i].header.packetNumber);
     // }
+    using Frame = arve::RawFrame<arve::slsPacketHeader, payload_size, num_packets>;
+    using Fifo = arve::CircularFifo<Frame>;
 
-
-    arve::Receiver<arve::PacketHeader, payload_size, num_packets> r;
-    r.emplace_back("127.0.0.1", "50001");
+    arve::UdpReceiver<arve::slsPacketHeader, payload_size, num_packets> r("127.0.0.1", "50001");;
     r.start();
+
+    arve::FrameAssembler<Fifo> a;
+    a.push_back(r.fifo_ptr());
+    a.start();
+
+    using namespace std::chrono_literals;
+    std::this_thread::sleep_for(10s);
+    r.stop();
+    a.stop();
 }

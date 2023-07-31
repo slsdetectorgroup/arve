@@ -18,6 +18,7 @@ endif()
 option(ARVE_TUNE_LOCAL "Tune to the specific CPU" OFF)
 option(ARVE_USE_SANITIZER "Use address sanitized" OFF)
 option(ARVE_BUILD_TESTS "Build unit tests" OFF)
+option(ARVE_BUILD_PYTHON_EXT "Build python extension OFF")
 
 add_library(project_settings INTERFACE)
 target_compile_features(project_settings INTERFACE cxx_std_17)
@@ -68,7 +69,7 @@ find_package(Threads REQUIRED)
 
 #Add library
 set(PublicHeaders
-    include/arve/SimpleQueue.h
+    include/arve/ProducerConsumerQueue.h
     include/arve/UdpSocket.h
 )
 
@@ -81,7 +82,9 @@ if(ARVE_BUILD_TESTS)
     target_sources(
         tests PRIVATE 
         ${CMAKE_CURRENT_SOURCE_DIR}/src/FrameGrabber.test.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/src/SimpleQueue.test.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/CircularFifo.test.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/ProducerConsumerQueue.test.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/RawFrame.test.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/src/UdpSocket.test.cpp
     )
 endif()
@@ -124,4 +127,10 @@ add_library(arve::shared ALIAS arve_shared)
 
 add_subdirectory(apps)
 
-
+if(ARVE_BUILD_PYTHON_EXT)
+  #Take python from conda, TODO! deal with non virtualenv
+  set(Python_FIND_VIRTUALENV "ONLY" CACHE STRING "Only virtual envs")
+  find_package (Python 3.6 COMPONENTS Interpreter Development)
+  find_package(pybind11 CONFIG)
+  add_subdirectory(python)
+endif()

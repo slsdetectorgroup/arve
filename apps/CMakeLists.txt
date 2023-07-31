@@ -8,3 +8,11 @@ set_target_properties(play PROPERTIES
         RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}
         OUTPUT_NAME play
 )
+
+add_executable(scratch scratch.cpp)
+target_link_libraries(scratch PRIVATE arve::static arve::settings)
+
+set_target_properties(scratch PROPERTIES
+        RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}
+        OUTPUT_NAME scratch
+)
