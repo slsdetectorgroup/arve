@@ -9,4 +9,6 @@ template <typename Container> bool allEqual(const Container &c) {
                             return element == c.front();
                         }));
 }
+
+
 } // namespace arve

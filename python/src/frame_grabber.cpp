@@ -1,13 +1,14 @@
 #include "arve/FrameGrabber.h"
 #include "arve/Packets.h"
+#include "arve/defs.h"
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
 #include <pybind11/numpy.h>
 #include <string>
 namespace py = pybind11;
 
-constexpr size_t JF_NumPackets = 128;
-constexpr size_t JF_PayloadSize = 8192;
+// constexpr size_t JF_NumPackets = 128;
+// constexpr size_t JF_PayloadSize = 8192;
 
 
 //Feels very convoluted to get access to packets

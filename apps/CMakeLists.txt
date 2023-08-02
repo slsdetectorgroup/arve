@@ -1,12 +1,12 @@
 
 
 
-add_executable(play main.cpp)
-target_link_libraries(play PRIVATE arve::static arve::settings)
+add_executable(receiver receiver.cpp)
+target_link_libraries(receiver PRIVATE arve::static arve::settings)
 
-set_target_properties(play PROPERTIES
+set_target_properties(receiver PROPERTIES
         RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}
-        OUTPUT_NAME play
+        OUTPUT_NAME receiver
 )
 
 add_executable(scratch scratch.cpp)

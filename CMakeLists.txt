@@ -75,7 +75,9 @@ set(PublicHeaders
 
 set(SourceFiles
     src/PacketSource.cpp
+    src/terminal.cpp
     src/UdpSocket.cpp
+    src/utils.cpp
 )
 
 if(ARVE_BUILD_TESTS)

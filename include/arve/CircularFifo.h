@@ -13,8 +13,6 @@ template <class ItemType> class CircularFifo {
     uint32_t fifo_size;
     folly::ProducerConsumerQueue<ItemType> free_slots;
     folly::ProducerConsumerQueue<ItemType> filled_slots;
-    // ProducerConsumerQueue<T> filled_slots{fifo_size};
-    // std::vector<T> items;
   
   public:
     CircularFifo() : CircularFifo(100){};
@@ -42,9 +40,6 @@ template <class ItemType> class CircularFifo {
 
     using value_type = ItemType;
 
-    // size_t size() const noexcept;
-    // size_t image_size() const noexcept;
-    // size_t numFilledSlots() const noexcept;
     auto numFilledSlots() const noexcept { return filled_slots.sizeGuess(); }
     auto numFreeSlots() const noexcept { return free_slots.sizeGuess(); }
     auto isFull() const noexcept { return filled_slots.isFull(); }

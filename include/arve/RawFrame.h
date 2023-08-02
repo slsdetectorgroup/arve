@@ -1,6 +1,7 @@
 #pragma once
 
 #include "arve/Packets.h"
+#include "arve/defs.h"
 #include <cstring>
 #include <fmt/format.h>
 #include <memory>
@@ -68,5 +69,7 @@ class RawFrame {
         fmt::print("RawFrame::packets: {}\n", fmt::ptr(data_));
     }
 };
+
+using JungfrauRawFrame = RawFrame<slsPacketHeader, JF_PayloadSize, JF_NumPackets>;
 
 } // namespace arve
