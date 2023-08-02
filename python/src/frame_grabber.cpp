@@ -16,7 +16,7 @@ using JFG =
 using JFRF =
     arve::RawFrame<arve::slsPacketHeader, JF_PayloadSize, JF_NumPackets>;
 
-using JFPB = arve::PacketBuffer<arve::slsPacketHeader, JF_PayloadSize>;
+using JFPB = arve::Packet<arve::slsPacketHeader, JF_PayloadSize>;
 void init_frame_grabber(py::module &m) {
 
     PYBIND11_NUMPY_DTYPE(arve::slsPacketHeader, frameNumber, expLength, packetNumber,

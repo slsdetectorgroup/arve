@@ -24,9 +24,16 @@ struct slsPacketHeader {
 
 //TODO! how much care do we need to take with alignment?
 template<typename Header, size_t PayloadSize>
-struct PacketBuffer{
+struct Packet{
         Header header;
         char data[PayloadSize];
+
+        //For outside access
+        using header_type = Header;
+        static constexpr auto payload_size = PayloadSize;
 };
+
+using JungfrauPacket = Packet<slsPacketHeader, 8192>;
+
 
 }

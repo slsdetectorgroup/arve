@@ -23,6 +23,22 @@ class UdpSocket {
 
     //TODO! Does templates really bring anything? (stack allocation of headers...)
     //How do we sync on frames in case of packet loss? 
+    
+    //Would have to use it with the non blocking trick otherwise
+    //we risk hanging on packet loss... but how do we deal with the first packet?
+    //redo redo redo...?
+    //https://man7.org/linux/man-pages/man2/recvmmsg.2.html
+    // The timeout argument does not work as intended.  The timeout is
+    // checked only after the receipt of each datagram, so that if up to
+    // vlen-1 datagrams are received before the timeout expires, but
+    // then no further datagrams are received, the call will block
+    // forever.
+
+    //Github discussion: supplying the MSG_DONTWAIT flag and setting the 
+    //timeout to NULL. When asking recvmmsg to retrieve you 20 packets and 
+    //there is one available, it will just read this one packet into your buffers.
+
+    
     template<size_t NumPackets>
     int multirecv(void *dst){
         struct mmsghdr msgs[NumPackets];

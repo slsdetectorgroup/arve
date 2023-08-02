@@ -9,17 +9,20 @@ namespace arve {
 // receive a single frame into either an allocated
 // or provided buffer
 
-template <typename PacketHeader, size_t PayloadSize, size_t NumPackets>
+
+
+// template <typename PacketHeader, size_t PayloadSize, size_t NumPackets>
+template <typename RawFrameType>
 class FrameGrabber {
     UdpSocket sock;
     // std::atomic<bool> stopped_{false};
     bool stopped_{false};
-    PacketBuffer<PacketHeader, PayloadSize> packet_buffer;
+    typename RawFrameType::packet_type packet_buffer;
     bool first_packet_cached{false};
 
   public:
     FrameGrabber(const std::string &node, const std::string &port)
-        : sock(node, port, sizeof(PacketHeader) + PayloadSize) {
+        : sock(node, port, sizeof(packet_buffer)) {
         sock.setBufferSize(1024 * 1024 * 100);
     }
 
@@ -47,13 +50,13 @@ class FrameGrabber {
         stopped_ = true;
     }
 
-    RawFrame<PacketHeader, PayloadSize, NumPackets> recv(){
-        RawFrame<PacketHeader, PayloadSize, NumPackets> frame;
-        recv_into(frame);
-        return std::move(frame);
-    }
+    // RawFrame<PacketHeader, PayloadSize, NumPackets> recv(){
+    //     RawFrame<PacketHeader, PayloadSize, NumPackets> frame;
+    //     recv_into(frame);
+    //     return std::move(frame);
+    // }
 
-    int recv_into(RawFrame<PacketHeader, PayloadSize, NumPackets> &raw_frame) {
+    int recv_into(RawFrameType &raw_frame) {
         stopped_ = false;
         auto dst = &raw_frame[0];
         // it could be that we already have the first packet in cache
@@ -65,7 +68,7 @@ class FrameGrabber {
             while (!sock.receivePacket(dst)) {
                 if (stopped_) {
                     fmt::print("FrameGrabber stopped!\n");
-                    return NumPackets; // All packets lost
+                    return RawFrameType::num_packets; // All packets lost
                 }
             }
         }
@@ -74,7 +77,7 @@ class FrameGrabber {
         ++dst;
 
         size_t numPacketsReceived = 1; // We have the first pkg already
-        while ((numPacketsReceived < NumPackets) && !stopped_) {
+        while ((numPacketsReceived < RawFrameType::num_packets) && !stopped_) {
             while (!sock.receivePacket(dst) && !stopped_) {
                 fmt::print("Timeout\n");
                 stopped_ = true;
@@ -91,7 +94,7 @@ class FrameGrabber {
             ++dst;
             // fmt::print("Got {} packets\n", numPacketsReceived);
         }
-        return static_cast<int>(NumPackets - numPacketsReceived);
+        return static_cast<int>(RawFrameType::num_packets - numPacketsReceived);
     }
 
     int multirecv_into(void *dst) { return 5; }

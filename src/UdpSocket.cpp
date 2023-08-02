@@ -70,7 +70,6 @@ UdpSocket::~UdpSocket() {
 void UdpSocket::shutdown() { ::shutdown(sockfd_, SHUT_RDWR); }
 
 bool UdpSocket::receivePacket(void *dst) {
-    // return true;
     auto rc = recvfrom(sockfd_, dst, packet_size_, 0, nullptr, nullptr);
     if (rc == static_cast<ssize_t>(packet_size_)) {
         return true;

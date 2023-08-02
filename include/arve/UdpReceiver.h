@@ -7,9 +7,10 @@ namespace arve {
 // Receiver to take data from one or several FrameGrabbers and
 template <typename PacketHeader, size_t PayloadSize, size_t NumPackets>
 class UdpReceiver {
-    using Grabber = FrameGrabber<PacketHeader, PayloadSize, NumPackets>;
-    using Fifo = CircularFifo<RawFrame<PacketHeader, PayloadSize, NumPackets>>;
     using Frame = RawFrame<PacketHeader, PayloadSize, NumPackets>;
+    using Grabber = FrameGrabber<Frame>;
+    using Fifo = CircularFifo<RawFrame<PacketHeader, PayloadSize, NumPackets>>;
+    
     Grabber grabber;
     Fifo fifo;
     std::atomic<bool> stopped = false;

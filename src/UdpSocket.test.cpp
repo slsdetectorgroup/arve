@@ -10,7 +10,7 @@
 
 
 using arve::UdpSocket;
-using arve::PacketBuffer;
+using arve::Packet;
 
 
 //Utility used for basic testing of sockets
@@ -58,7 +58,7 @@ TEST_CASE("Receive a packet"){
     };
 
     constexpr size_t data_size = 1024-sizeof(CustomHeader);
-    PacketBuffer<CustomHeader, data_size> data;
+    Packet<CustomHeader, data_size> data;
     data.header.frame_number = 123;
 
     
@@ -70,7 +70,7 @@ TEST_CASE("Receive a packet"){
     REQUIRE(n == 1024);
 
     //Receiver test data
-    PacketBuffer<CustomHeader, data_size> buf;
+    Packet<CustomHeader, data_size> buf;
     REQUIRE(s.receivePacket(&buf));
     close(fd);
 
