@@ -18,7 +18,7 @@ UdpSocket::UdpSocket(const std::string &node, const std::string &port,
     struct addrinfo *res{nullptr};
     if (getaddrinfo(node.c_str(), port.c_str(), &hints, &res))
         throw std::runtime_error("Get getaddrinfo failed");
-    
+
     sockfd_ = socket(res->ai_family, res->ai_socktype, res->ai_protocol);
     if (sockfd_ == -1)
         throw std::runtime_error("Failed to open socket");
@@ -29,34 +29,31 @@ UdpSocket::UdpSocket(const std::string &node, const std::string &port,
             fmt::format("Failed to bind socket ({}:{})", node, port));
     }
 
-    //TODO! should we make this configurable, or do we actually don't need it?
-    struct timeval timeout;      
+    // TODO! should we make this configurable, or do we actually don't need it?
+    struct timeval timeout;
     timeout.tv_sec = 1;
     timeout.tv_usec = 0;
-    if (setsockopt(sockfd_, SOL_SOCKET, SO_RCVTIMEO, &timeout,
-                sizeof timeout) < 0)
-        throw std::runtime_error(
-            fmt::format("Failed to set timeout"));
-
+    if (setsockopt(sockfd_, SOL_SOCKET, SO_RCVTIMEO, &timeout, sizeof timeout) <
+        0)
+        throw std::runtime_error(fmt::format("Failed to set timeout"));
 
     freeaddrinfo(res);
     fmt::print("UDP connected to: {}:{}\n", node, port);
 }
 
+UdpSocket::UdpSocket(const std::string &node, int port, size_t packet_size)
+    : UdpSocket(node, std::to_string(port), packet_size) {}
 
-UdpSocket::UdpSocket(){
-}
+UdpSocket::UdpSocket() {}
 
-UdpSocket::UdpSocket(UdpSocket&& other){
-    other.swap(*this);
-}
+UdpSocket::UdpSocket(UdpSocket &&other) { other.swap(*this); }
 
-void UdpSocket::UdpSocket::swap(UdpSocket& other){
+void UdpSocket::UdpSocket::swap(UdpSocket &other) {
     std::swap(sockfd_, other.sockfd_);
     std::swap(packet_size_, other.packet_size_);
 }
 
-UdpSocket &UdpSocket::operator=(UdpSocket&& other){
+UdpSocket &UdpSocket::operator=(UdpSocket &&other) {
     other.swap(*this);
     return *this;
 }
@@ -74,13 +71,13 @@ bool UdpSocket::receivePacket(void *dst) {
     if (rc == static_cast<ssize_t>(packet_size_)) {
         return true;
     } else if (rc == -1) {
-            // strerrorname_np() arrived in glibc 2.6 not using it for now
-            // also not available on apple
-            int errv{errno};
-            if (!(errv == EAGAIN || errv == EWOULDBLOCK))
-                fmt::print("errno: {}, {}\n", errv, strerror(errv));
+        // strerrorname_np() arrived in glibc 2.6 not using it for now
+        // also not available on apple
+        int errv{errno};
+        if (!(errv == EAGAIN || errv == EWOULDBLOCK))
+            fmt::print("errno: {}, {}\n", errv, strerror(errv));
     } else {
-            fmt::print("Warning: read {} bytes\n", rc);
+        fmt::print("Warning: read {} bytes\n", rc);
     }
     return false;
 }

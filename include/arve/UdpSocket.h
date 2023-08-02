@@ -14,6 +14,8 @@ class UdpSocket {
   public:
     UdpSocket(const std::string &node, const std::string &port,
               size_t packet_size);
+    UdpSocket(const std::string &node, int port,
+              size_t packet_size);
     UdpSocket();
     ~UdpSocket();
     bool receivePacket(void *dst);
@@ -21,7 +23,7 @@ class UdpSocket {
     size_t bufferSize() const;
     void shutdown();
 
-    //TODO! Does templates really bring anything? (stack allocation of headers...)
+
     //How do we sync on frames in case of packet loss? 
     
     //Would have to use it with the non blocking trick otherwise

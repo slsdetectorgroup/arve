@@ -50,6 +50,9 @@ class FrameGrabber {
         stopped_ = true;
     }
 
+    FrameGrabber(const std::string &node, int port)
+        : FrameGrabber(node, std::to_string(port)) {}
+
     // RawFrame<PacketHeader, PayloadSize, NumPackets> recv(){
     //     RawFrame<PacketHeader, PayloadSize, NumPackets> frame;
     //     recv_into(frame);
