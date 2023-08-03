@@ -8,9 +8,7 @@ namespace arve {
 template <typename RawFrameType> class UdpReceiver {
 
     using Grabber = FrameGrabber<RawFrameType>;
-    using Fifo = CircularFifo<
-        RawFrame<typename RawFrameType::header_type, RawFrameType::payload_size,
-                 RawFrameType::num_packets>>;
+    using Fifo = CircularFifo<RawFrameType>;
 
     Grabber grabber;
     Fifo fifo;

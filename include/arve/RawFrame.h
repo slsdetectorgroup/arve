@@ -2,6 +2,7 @@
 
 #include "arve/Packets.h"
 #include "arve/defs.h"
+#include "arve/ImageData.h"
 #include <cstring>
 #include <fmt/format.h>
 #include <memory>
@@ -35,13 +36,13 @@ class RawFrame {
     RawFrame() : data_(new RawFrameData<Header, PayloadSize, NumPackets>) {}
     ~RawFrame() { delete data_; }
     RawFrame(const RawFrame &other) : RawFrame() {
-        fmt::print("RawFrame was copy constructed!\n");
+        DBG(fmt::print("RawFrame was copy constructed!\n"));
         print_addr();
         memcpy(data_, other.data_, sizeof(data_));
     }
 
     RawFrame &operator=(const RawFrame &other) {
-        fmt::print("RawFrame was copy assigned!\n");
+        DBG(fmt::print("RawFrame was copy assigned!\n"));
         memcpy(data_, other.data_, sizeof(data_));
         return *this;
     }
@@ -52,12 +53,12 @@ class RawFrame {
     // with the other object. The moved from object will have
     // a nullptr and not owning any data
     RawFrame(RawFrame &&other) {
-        fmt::print("RawFrame was move constructed!\n");
+        DBG(fmt::print("RawFrame was move constructed!\n"));
         std::swap(data_, other.data_);
     }
 
     RawFrame &operator=(RawFrame &&other) {
-        fmt::print("RawFrame was move assigned!\n");
+        DBG(fmt::print("RawFrame was move assigned!\n"));
         std::swap(data_, other.data_);
         return *this;
     }
@@ -70,6 +71,27 @@ class RawFrame {
     }
 };
 
-using JungfrauRawFrame = RawFrame<slsPacketHeader, JF_PayloadSize, JF_NumPackets>;
+// using JungfrauRawFrame = RawFrame<slsPacketHeader, JF_PayloadSize, JF_NumPackets>;
+// If we use the derrived type directly we should always get the direct call
+// https://quuxplusone.github.io/blog/2021/02/15/devirtualization/
+// Do we have to use generic variants then maybe resort to CRTP?
+struct JungfrauRawFrame : public RawFrame<slsPacketHeader, JF_PayloadSize, JF_NumPackets>{
+    static constexpr size_t n_rows = 512;
+    static constexpr size_t n_cols = 1024;
+    using value_type = uint16_t;
+
+    ImageData<value_type, 2> assemble(){
+        ImageData<value_type, 2> image{};
+        assemble_into(image.span());
+        return image;
+    }
+
+    void assemble_into(DataSpan<value_type, 2> image){
+        for (size_t i = 0; i<JungfrauRawFrame::num_packets; ++i){
+            fmt::print("packet: {}\n", operator[](i).header.packetNumber);
+        }
+    }
+
+};
 
 } // namespace arve

@@ -51,6 +51,11 @@ template <typename RawFrameType> class FrameAssembler {
 
             for (size_t i = 0; i < fifos.size(); ++i) {
                 // Do something with the frame
+
+                //Where does the knowledeg about the reconstruction go?
+                //use a variant and visitor pattern or inject it using a template?
+                auto res = frames[i].assemble();
+
                 fifos[i]->push_free(std::move(frames[i]));
             }
         }

@@ -12,12 +12,14 @@
 
 using namespace arve;
 
-int main() {
 
+int main() {
+    DBG(fmt::print("hello\n"));
     direct_input();
     try {
         // Create the UDP receiver including the fifo for free and filled
         UdpReceiver<JungfrauRawFrame> r("127.0.0.1", 50001);
+
 
         // Frame assembler to go with the UdpReceiver
         // in case of multiple sources construct from vector of UdpReceivers

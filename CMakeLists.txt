@@ -18,7 +18,8 @@ endif()
 option(ARVE_TUNE_LOCAL "Tune to the specific CPU" OFF)
 option(ARVE_USE_SANITIZER "Use address sanitized" OFF)
 option(ARVE_BUILD_TESTS "Build unit tests" OFF)
-option(ARVE_BUILD_PYTHON_EXT "Build python extension OFF")
+option(ARVE_BUILD_PYTHON_EXT "Build python extension" OFF)
+option(ARVE_DEBUG_PRINTS "Print extra debug information" OFF)
 
 add_library(project_settings INTERFACE)
 target_compile_features(project_settings INTERFACE cxx_std_17)
@@ -42,6 +43,11 @@ target_compile_options(project_settings INTERFACE
                             -Wpedantic
                             -Wcast-align
 )
+
+if(ARVE_DEBUG_PRINTS)
+    target_compile_definitions(project_settings INTERFACE ARVE_DEBUG)
+endif()
+
 if(ARVE_USE_SANITIZER)
   set (CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -fno-omit-frame-pointer -fsanitize=address,undefined")
   set (CMAKE_LINKER_FLAGS_DEBUG "${CMAKE_LINKER_FLAGS_DEBUG} -fno-omit-frame-pointer -fsanitize=address,undefined")
@@ -83,8 +89,10 @@ set(SourceFiles
 if(ARVE_BUILD_TESTS)
     target_sources(
         tests PRIVATE 
-        ${CMAKE_CURRENT_SOURCE_DIR}/src/FrameGrabber.test.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/src/CircularFifo.test.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/DataSpan.test.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/FrameGrabber.test.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/ImageData.test.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/src/ProducerConsumerQueue.test.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/src/RawFrame.test.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/src/UdpSocket.test.cpp

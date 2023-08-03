@@ -8,6 +8,7 @@
 #include "RawFrame.h"
 #include "UdpSocket.h"
 #include "FrameAssembler.h"
+#include "ImageData.h"
 #include "terminal.h"
 
 

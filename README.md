@@ -12,6 +12,7 @@ Exploring ways of receiving UDP data from hybrid pixel detectors
 - How deep do we go with templates?
 - C++ 20/23?
 - Python bindings using cppyy or pybind11?
+- Move image data/data span to it's own library??
 
 
 ### Dependencies (at the moment)
